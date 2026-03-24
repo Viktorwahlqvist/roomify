@@ -14,6 +14,9 @@ export const REDIRECT_DELAY_MS = 600;
 export const PROGRESS_INTERVAL_MS = 100;
 export const PROGRESS_STEP = 5;
 
+// File Size Limits
+export const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 // UI Constants
 export const GRID_OVERLAY_SIZE = "60px 60px";
 export const GRID_COLOR = "#3B82F6";

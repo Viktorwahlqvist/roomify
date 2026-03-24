@@ -5,6 +5,7 @@ import {
   PROGRESS_INTERVAL_MS,
   PROGRESS_STEP,
   REDIRECT_DELAY_MS,
+  MAX_FILE_SIZE,
 } from '../lib/constants';
 
 interface UploadProps {
@@ -38,17 +39,23 @@ function Upload({ onComplete }: UploadProps) {
 
   const processFile = (selectedFile: File) => {
     if (!isSignedIn) return;
-
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+    // Clear any existing timers from a previous upload
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    // 10 MB
     if (selectedFile.size > MAX_FILE_SIZE) {
       setError('File exceeds the 10 MB limit. Please choose a smaller image.');
       return;
     }
-
     setError(null);
     setFile(selectedFile);
     setProgress(0);
-
     const reader = new FileReader();
 
     reader.onerror = () => {
