@@ -1,0 +1,60 @@
+import { Box } from 'lucide-react';
+import React, { use } from 'react';
+import Button from './ui/Button';
+import { useOutletContext } from 'react-router';
+
+const Navbar = () => {
+  const { isSignedIn, userName, signIn, signOut } = useOutletContext<AuthContext>();
+
+  const links = [
+    { label: 'Products', href: '#' },
+    { label: 'Pricing', href: '#' },
+    { label: 'Commmunity', href: '#' },
+    { label: 'Enterprise', href: '#' },
+  ];
+  const handleAuthClick = async () => {
+    if (isSignedIn) {
+      try {
+        await signOut();
+      } catch (error) {
+        console.error(`Puter sign out failed: ${error}`);
+      }
+      return;
+    }
+    try {
+      await signIn();
+    } catch (error) {
+      console.error(`Puter sign in failed: ${error}`);
+    }
+
+  };
+
+
+  return (
+    <header className='navbar'>
+      <nav className='inner'>
+        <div className='left'>
+          <div className='brand'>
+            <Box className='logo' />
+            <span className='name'></span>
+          </div>
+          <ul className='links'>
+            {links.map((link, i) => (
+              <a key={i} href={link.href}>{link.label}</a>
+            ))}</ul>
+        </div>
+        <div className='actions'>
+          {isSignedIn ? (<><span className='greeting'>{userName ? `Hi ${userName}` : "Signed in"}</span>
+            <Button size="sm" onClick={handleAuthClick} className='cta' >Log out</Button></>) :
+            (<><button onClick={handleAuthClick} className='login'>Log in</button>
+              <a href='#upload' className='cta'>Get started</a></>
+            )}
+
+
+        </div>
+      </nav>
+    </header>
+  );
+};
+
+export default Navbar;
